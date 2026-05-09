@@ -30,3 +30,4 @@ class BancoDeDadosLocal:
         )
     ''')
 print('Banco criado')
+

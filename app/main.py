@@ -8,16 +8,23 @@ app = FastAPI(
     version="1.0.0",
 )#acessivel pelo /docs
 
+app.include_router(cliente.router)
+
 @app.get("/") # indica o que vai aparecer quando acessar o http://127.0.0.1:8000/ (pagina inicial)
 async def helth_check(): # por convenção os end points são assincronos
     return {"status": "Ok"}
 
-@app.get("/front", response_class=HTMLResponse) #ao inves de retornar um json vai retornar um html
+@app.get("/front", response_class=HTMLResponse) #ao inves de retornar um json vai retornar um html (conferir em /docs)
 async def front_page():
     html_content= """ 
-<h1>Olá</h1>
-<p>Minha página</p>
+<html>
+    <head>
+        <title> techlog Solutions </title>
+    </head>
+    <body>
+        <h1> techlog Solutions </h1>
+    </body>
+</html>
 """
     return html_content
 
-app.include_router(cliente.router)
