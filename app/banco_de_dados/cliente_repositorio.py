@@ -1,5 +1,5 @@
 from app.banco_de_dados.local import BancoDeDadosLocal
-from app.modelos.cliente import Cliente
+from app.modelos.cliente import Cliente, ClienteCriarAtualizar
 
 class ClienteRepositorio:
     def __init__(self, banco_de_dados):
@@ -35,3 +35,32 @@ class ClienteRepositorio:
                     )
             return None
             
+    async def criar_cliente(self, cliente: ClienteCriarAtualizar) -> Cliente:
+        with self.bd.conectar() as conexao:
+            cursor = conexao.cursor()
+            cursor.execute(
+                "INSERT INTO clientes (nome, email, telefone) VALUES (?,?,?)", 
+                (cliente.nome, cliente.email, cliente.telefone)
+            )
+            cliente_id = cursor.lastrowid
+            return Cliente(id_=cliente_id, nome=cliente.nome, email=cliente.email, telefone=cliente.telefone)
+        
+    async def atualizar_cliente(self, cliente_id, cliente: ClienteCriarAtualizar) -> Cliente | None:
+        with self.bd.conectar() as conexao:
+            cursor = conexao.cursor()
+            cursor.execute(
+                "UPDATE clientes SET nome = ?, email = ?, telefone = ? WHERE id = ?", 
+                (cliente.nome, cliente.email, cliente.telefone, cliente_id)
+            )
+            if cursor.rowcount == 0:
+                return None
+            return Cliente(id_=cliente_id, nome=cliente.nome, email=cliente.email, telefone=cliente.telefone)
+    
+    async def deletar_cliente(self, cliente_id: int) -> bool:
+        with self.bd.conectar() as conexao:
+            cursor = conexao.cursor()
+            cursor.execute(
+                "DELETE FROM clientes WHERE id = ?", (cliente_id,) 
+            )
+            return cursor.rowcount > 0
+        

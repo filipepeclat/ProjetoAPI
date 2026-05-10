@@ -5,3 +5,8 @@ class Cliente(BaseModel): #BseModel gera um json ou um dicionario e faz convers√
     nome: str
     email: str
     telefone: str
+
+class ClienteCriarAtualizar(BaseModel):
+    nome: str
+    email: str
+    telefone: str
